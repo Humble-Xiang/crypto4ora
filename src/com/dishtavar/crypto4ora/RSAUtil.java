@@ -3,6 +3,8 @@ package com.dishtavar.crypto4ora;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -29,7 +31,7 @@ public class RSAUtil {
 		PublicKey key = KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(publicKeyByteArr));
 		Cipher cipher = Cipher.getInstance(ALGORITHM);
 		cipher.init(Cipher.PUBLIC_KEY, key);
-		byte[] encryptedBytes = doFinalWithBlock(cipher, valueToEncrypt.getBytes(), ENCRYPT_BLOCK_SIZE);
+		byte[] encryptedBytes = doFinalWithBlock(cipher, valueToEncrypt.getBytes("UTF-8"), ENCRYPT_BLOCK_SIZE);
 		return Base64.encode(encryptedBytes);
 	}
 
@@ -39,7 +41,7 @@ public class RSAUtil {
 		Cipher cipher = Cipher.getInstance(ALGORITHM);
 		cipher.init(Cipher.PRIVATE_KEY, key);
 		byte[] decryptedBytes = doFinalWithBlock(cipher, Base64.decode(valueToDecrypt), DECRYPT_BLOCK_SIZE);
-		return new String(decryptedBytes);
+		return new String(decryptedBytes, "UTF-8");
 	}
 
 	private static byte[] doFinalWithBlock(Cipher cipher, byte[] data, int maxBlockSize) throws IllegalBlockSizeException, BadPaddingException, IOException {
